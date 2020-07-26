@@ -42,18 +42,4 @@ public class setup {
 		}
 		return true;
 	}
-	
-	public static boolean remove() {
-		File basestation = new File("C:\\Program Files (x86)\\Steam\\steamapps\\workshop\\content\\250820\\defaultBasestation");
-		File controller = new File("C:\\Program Files (x86)\\Steam\\steamapps\\workshop\\content\\250820\\defaultController");
-		
-		try {
-			basestation.delete();
-			controller.delete();
-		} catch(SecurityException e) { //Error tracking
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
 }
