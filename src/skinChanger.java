@@ -33,17 +33,17 @@ public class skinChanger {
 		return skins;
 	}
 	
-	public static boolean swapSkins(int cmd, String[][] skins, String steam) {
+	public static boolean swapSkins(int type, int ind, String[][] skins, String steam) {
 		File skin = new File(steam + "\\steamapps\\workshop\\content\\250820");
 		File basestationDefault = new File(steam + "\\steamapps\\common\\SteamVR\\resources\\rendermodels\\lh_basestation_vive");
 		File controllerDefault = new File(steam + "\\steamapps\\common\\SteamVR\\resources\\rendermodels\\vr_controller_vive_1_5");
 
-		if(cmd <= Integer.valueOf(skins[0][0])) {
+		if(type==0) {
 			File[] delete = basestationDefault.listFiles();
 			for(File del : delete) {
 				del.delete();
 			}
-			File[] copy = new File(skin.toString() + "\\" + skins[0][cmd]).listFiles();
+			File[] copy = new File(skin.toString() + "\\" + skins[0][ind]).listFiles();
 			for(File c : copy) {
 				File[] b = c.listFiles();
 				for(File temp : b) {
@@ -60,7 +60,7 @@ public class skinChanger {
 			for(File del : delete) {
 				del.delete();
 			}
-			File[] copy = new File(skin.toString() + "\\" + skins[0][cmd-Integer.valueOf(skins[0][0])]).listFiles();
+			File[] copy = new File(skin.toString() + "\\" + skins[1][ind]).listFiles();
 			for(File c : copy) {
 				File[] b = c.listFiles();
 				for(File temp : b) {
