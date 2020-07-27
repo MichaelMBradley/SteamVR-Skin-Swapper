@@ -14,7 +14,7 @@ public class setup {
 			return false;
 		}
 		try {
-			if(!basestation.exists()) { //Only runs if basestation backup file does not yet exist
+			if(!basestation.exists()) { //Only runs if base station backup file does not yet exist
 					basestation.mkdir(); //Creates pretend workshop entry
 					new File(basestation, basestationDefault.getName()).mkdir(); //Creates sub-directory for textures
 					toCopy = basestationDefault.listFiles();
