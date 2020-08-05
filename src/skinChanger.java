@@ -4,7 +4,7 @@ import java.nio.file.Files;
 
 public class skinChanger {
 	public static String[][] findSkins(String steam) {
-		File SteamVR = new File(steam + "\\steamapps\\workshop\\content\\250820");
+		File SteamVR = new File(steam + "\\workshop\\content\\250820");
 		String [][] skins = new String[2][100];
 		File[] check = SteamVR.listFiles();
 		int b = 1;
@@ -33,10 +33,10 @@ public class skinChanger {
 		return skins;
 	}
 	
-	public static boolean swapSkins(int type, int ind, String[][] skins, String steam) {
-		File skin = new File(steam + "\\steamapps\\workshop\\content\\250820");
-		File basestationDefault = new File(steam + "\\steamapps\\common\\SteamVR\\resources\\rendermodels\\lh_basestation_vive");
-		File controllerDefault = new File(steam + "\\steamapps\\common\\SteamVR\\resources\\rendermodels\\vr_controller_vive_1_5");
+	public static void swapSkins(int type, int ind, String[][] skins, String steam) {
+		File skin = new File(steam + "\\workshop\\content\\250820");
+		File basestationDefault = new File(steam + "\\common\\SteamVR\\resources\\rendermodels\\lh_basestation_vive");
+		File controllerDefault = new File(steam + "\\common\\SteamVR\\resources\\rendermodels\\vr_controller_vive_1_5");
 
 		if(type==0) {
 			File[] delete = basestationDefault.listFiles();
@@ -50,8 +50,8 @@ public class skinChanger {
 					try {
 						Files.copy(temp.toPath(), new File(basestationDefault.toString() + "\\" + temp.getName()).toPath());
 					} catch (IOException e) {
-						e.printStackTrace();
-						return false;
+						error err = new error();
+						err.display(e.toString());
 					}
 				}
 			}
@@ -67,12 +67,11 @@ public class skinChanger {
 					try {
 						Files.copy(temp.toPath(), new File(controllerDefault.toString() + "\\" + temp.getName()).toPath());
 					} catch (IOException e) {
-						e.printStackTrace();
-						return false;
+						error err = new error();
+						err.display(e.toString());
 					}
 				}
 			}
 		}
-		return true;
 	}
 }

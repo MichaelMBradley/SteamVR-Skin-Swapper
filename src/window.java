@@ -19,18 +19,14 @@ public class window implements ActionListener {
 	private int indc = 1;
 	private String dir;
 	private String[][] skinfo;
-	private String message;
 	private String steam;
 	private String currentImg;
 	
-	public void info(String SteamVR, String[][] skin, String msg) {
-		dir = SteamVR + "\\steamapps\\workshop\\content\\250820";
+	public void setupGUI(String SteamVR, String[][] skin) {
+		dir = SteamVR + "\\workshop\\content\\250820";
 		steam = SteamVR;
 		skinfo = skin;
-		message = msg;
-	}
-	
-	public void setupGUI() {
+		
 		f = new JFrame("SteamVR Skin Swapper");
 		r = new JButton(">");
 		r.setBounds(450, 0, 50, 300);
@@ -94,8 +90,9 @@ public class window implements ActionListener {
 		} else if(a.getSource() == e) {
 			try {
 				Desktop.getDesktop().open(new File(currentImg).getParentFile());
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (IOException er) {
+				error err = new error();
+				err.display(er.toString());
 			}
 		} else if(a.getSource() == c) {
 			if(type == 0) {
@@ -125,7 +122,7 @@ public class window implements ActionListener {
 					ImageIcon icon = new ImageIcon(img);
 					j.setIcon(icon);
 				} else {
-					c.setText(message);
+					c.setText("No downloaded base station skins could be found.");
 				}
 			} else {
 				if(Integer.valueOf(skinfo[1][0])!=0) {
@@ -135,11 +132,12 @@ public class window implements ActionListener {
 					ImageIcon icon = new ImageIcon(img);
 					j.setIcon(icon);
 				} else {
-					c.setText(message);
+					c.setText("No downloaded controller skins could be found.");
 				}
 			}
-		} catch(IOException e) {
-			e.printStackTrace();
+		} catch(IOException er) {
+			error err = new error();
+			err.display(er.toString());
 		}
 	}
 }
