@@ -1,39 +1,93 @@
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.BufferedReader;
 
 public class skinChanger {
-	public static String[][] findSkins(String steam) {
+	public static ArrayList<String> findBasestations(String steam) {
 		File SteamVR = new File(steam + "\\workshop\\content\\250820");
-		String [][] skins = new String[2][100];
-		File[] check = SteamVR.listFiles();
-		int b = 1;
-		int c = 1;
+		ArrayList<String> skins = new ArrayList<String>();
+		skins.add(null);
 		
+		File[] check = SteamVR.listFiles();
 		for(File corr : check) {
 			if(corr.isDirectory()) {
 				File[] test = corr.listFiles();
 				for(File thumb : test) {
 					if(new File(thumb.toString() + "\\vive_base_thumbnail.png").exists()) {
-						skins[0][b] = corr.getName();
-						b++;
-					} else if(new File(thumb.toString() + "\\vive_controller_thumbnail.png").exists()) {
-						skins[1][c] = corr.getName();
-						c++;
+						skins.add(corr.getName());
+						if(!new File(thumb.toString() + "\\skinID.txt").exists()) {
+							try {
+								File basestationSkin = new File(thumb.toString(), "skinID.txt");
+								FileWriter b = new FileWriter(basestationSkin);
+								b.write(corr.getName());
+								b.close();
+							} catch (IOException e) {
+								error err = new error();
+								err.display(e.toString());
+							}
+							
+						}
 					}
 				}
 			}
 		}
 		
-		b--;
-		c--;
-		skins[0][0] = String.valueOf(b);
-		skins[1][0] = String.valueOf(c);
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(steam + "\\common\\SteamVR\\resources\\rendermodels\\lh_basestation_vive\\skinID.txt"));
+			skins.set(0, br.readLine());
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		return skins;
 	}
 	
-	public static void swapSkins(int type, int ind, String[][] skins, String steam) {
+	public static ArrayList<String> findControllers(String steam) {
+		File SteamVR = new File(steam + "\\workshop\\content\\250820");
+		ArrayList<String> skins = new ArrayList<String>();
+		skins.add(null);
+		
+		File[] check = SteamVR.listFiles();
+		for(File corr : check) {
+			if(corr.isDirectory()) {
+				File[] test = corr.listFiles();
+				for(File thumb : test) {
+					if(new File(thumb.toString() + "\\vive_controller_thumbnail.png").exists()) {
+						skins.add(corr.getName());
+						if(!new File(thumb.toString() + "\\skinID.txt").exists()) {
+							try {
+								File controllerSkin = new File(thumb.toString(), "skinID.txt");
+								FileWriter c = new FileWriter(controllerSkin);
+								c.write(corr.getName());
+								c.close();
+							} catch (IOException e) {
+								error err = new error();
+								err.display(e.toString());
+							}
+							
+						}
+					}
+				}
+			}
+		}
+		
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(steam + "\\common\\SteamVR\\resources\\rendermodels\\vr_controller_vive_1_5\\skinID.txt"));
+			skins.set(0, br.readLine());
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return skins;
+	}
+	
+	public static void swapSkins(int type, ArrayList<String> skins, String steam) {
 		File skin = new File(steam + "\\workshop\\content\\250820");
 		File basestationDefault = new File(steam + "\\common\\SteamVR\\resources\\rendermodels\\lh_basestation_vive");
 		File controllerDefault = new File(steam + "\\common\\SteamVR\\resources\\rendermodels\\vr_controller_vive_1_5");
@@ -43,7 +97,7 @@ public class skinChanger {
 			for(File del : delete) {
 				del.delete();
 			}
-			File[] copy = new File(skin.toString() + "\\" + skins[0][ind]).listFiles();
+			File[] copy = new File(skin.toString() + "\\" + skins.get(0)).listFiles();
 			for(File c : copy) {
 				File[] b = c.listFiles();
 				for(File temp : b) {
@@ -60,7 +114,7 @@ public class skinChanger {
 			for(File del : delete) {
 				del.delete();
 			}
-			File[] copy = new File(skin.toString() + "\\" + skins[1][ind]).listFiles();
+			File[] copy = new File(skin.toString() + "\\" + skins.get(0)).listFiles();
 			for(File c : copy) {
 				File[] b = c.listFiles();
 				for(File temp : b) {

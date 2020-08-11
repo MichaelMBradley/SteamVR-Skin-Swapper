@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Scanner;
@@ -67,10 +68,27 @@ public class setup {
 						Files.copy(copy.toPath(), new File(controller.toString() + "\\" + controllerDefault.getName() + "\\" + copy.getName()).toPath()); //Creates path for copied file
 					}
 			}
+			
+			File basestationSkin = new File(basestationDefault.getAbsolutePath(), "skinID.txt"); //Creates file to show current skin
+			File controllerSkin = new File(controllerDefault.getAbsolutePath(), "skinID.txt");
+			
+			if(!basestationSkin.exists()) {
+				FileWriter b = new FileWriter(basestationSkin); //Writes default skin to file
+				b.write("defaultBasestation");
+				b.close();
+			}
+			
+			if(!controllerSkin.exists()) {
+				FileWriter c = new FileWriter(controllerSkin);
+				c.write("defaultController");
+				c.close();
+			}
 		} catch(SecurityException e) { //Error tracking
-			e.printStackTrace();
+			error err = new error();
+			err.display(e.toString());
 		} catch(IOException e) {
-			e.printStackTrace();
+			error err = new error();
+			err.display(e.toString());
 		}
 		return steam;
 	}
