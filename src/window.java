@@ -5,6 +5,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class window implements ActionListener {
 	private JInternalFrame f;
@@ -15,24 +16,34 @@ public class window implements ActionListener {
 	private JButton t;
 	private JLabel j;
 	private int type = 0;
-	private int indb = 1;
-	private int indc = 1;
+	private int indb;
+	private int indc;
 	private String dir;
-	private String[][] skinfo;
+	private ArrayList<String> ba;
+	private ArrayList<String> co;
 	private String steam;
 	private String currentImg;
 	private JMenuBar menuBar;
 	private JMenu mnNewMenu;
 	private JMenuItem mntmNewMenuItem;
-	
-	/**
-	 * @wbp.parser.entryPoint
-	 */
-	public void setupGUI(String SteamVR, String[][] skin) {
+
+	public void setupGUI(String SteamVR, ArrayList<String> basestations, ArrayList<String> controllers) {
 		dir = SteamVR + "\\workshop\\content\\250820";
 		steam = SteamVR;
-		skinfo = skin;
-		
+		ba = basestations;
+		co = controllers;
+
+		for(int i = 1; i < ba.size(); i++) {
+			if(ba.get(0).equals(ba.get(i))) {
+				indb = i;
+			}
+		}
+		for(int i = 1; i < co.size(); i++) {
+			if(co.get(0).equals(co.get(i))) {
+				indc = i;
+			}
+		}
+
 		f = new JInternalFrame("SteamVR Skin Swapper", false);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setClosable(true);
@@ -54,47 +65,47 @@ public class window implements ActionListener {
 		j = new JLabel();
 		j.setBounds(53, 0, 400, 300);
 		f.getContentPane().setLayout(null);
-		
+
 		f.getContentPane().add(r);f.getContentPane().add(l);f.getContentPane().add(e);f.getContentPane().add(c);f.getContentPane().add(t);f.getContentPane().add(j);
 		f.setSize(522,405);
-		
+
 		menuBar = new JMenuBar();
 		f.setJMenuBar(menuBar);
-		
+
 		mnNewMenu = new JMenu("File");
 		menuBar.add(mnNewMenu);
-		
+
 		mntmNewMenuItem = new JMenuItem("Select skins");
 		mnNewMenu.add(mntmNewMenuItem);
 		f.setVisible(true);
-		
+
 		reloadImage();
 	}
-	
+
 	public void actionPerformed(ActionEvent a) {
 		if(a.getSource() == r) {
-			if(type == 0) {
+			if(type == 0) { //Cycles right through skins
 				indb++;
-				if(indb > Integer.valueOf(skinfo[0][0])) {
-					indb = 1;
+				if(indb == ba.size()) {
+					indb = 1; //Overflows to "0"
 				}
-			} else {
+			} else { //If relevant skins are controllers
 				indc++;
-				if(indc > Integer.valueOf(skinfo[1][0])) {
+				if(indc == co.size()) {
 					indc = 1;
 				}
 			}
 			reloadImage();
 		} else if(a.getSource() == l) {
-			if(type == 0) {
+			if(type == 0) { //Cycles left through skins
 				indb--;
 				if(indb < 1) {
-					indb = Integer.valueOf(skinfo[0][0]);
+					indb = ba.size()-1; //Underflows to max
 				}
-			} else {
+			} else { //If relevant skins are controllers
 				indc--;
 				if(indc < 1) {
-					indc = Integer.valueOf(skinfo[1][0]);
+					indc = co.size()-1;
 				}
 			}
 			reloadImage();
@@ -107,10 +118,14 @@ public class window implements ActionListener {
 			}
 		} else if(a.getSource() == c) {
 			if(type == 0) {
-				skinChanger.swapSkins(type, indb, skinfo, steam);
+				ba.set(0, ba.get(indb));
+				skinChanger.swapSkins(type, ba, steam);
 			} else {
-				skinChanger.swapSkins(type, indc, skinfo, steam);
+				co.set(0, co.get(indc));
+				skinChanger.swapSkins(type, co, steam);
 			}
+
+			reloadText();
 		} else if(a.getSource() == t) {
 			if(type == 0) {
 				type = 1;
@@ -119,36 +134,61 @@ public class window implements ActionListener {
 				type = 0;
 				t.setText("Controller");
 			}
+
 			reloadImage();
 		}
 	}
-	
+
 	public void reloadImage() {
 		try {
 			if(type == 0) {
-				if(Integer.valueOf(skinfo[0][0])!=0) {
-					File[] sub = new File(dir + "\\" + skinfo[0][indb]).listFiles();
+				if(ba.size()>1) {
+					File[] sub = new File(dir + "\\" + ba.get(indb)).listFiles();
 					currentImg = sub[0] + "\\vive_base_thumbnail.png";
 					BufferedImage img = ImageIO.read(new File(currentImg));
 					ImageIcon icon = new ImageIcon(img);
 					j.setIcon(icon);
+					reloadText();
 				} else {
-					c.setText("No downloaded base station skins could be found.");
+					c.setText("No base station skins found.");
 				}
 			} else {
-				if(Integer.valueOf(skinfo[1][0])!=0) {
-					File[] sub = new File(dir + "\\" + skinfo[1][indc]).listFiles();
+				if(co.size()>1) {
+					File[] sub = new File(dir + "\\" + co.get(indc)).listFiles();
 					currentImg = sub[0] + "\\vive_controller_thumbnail.png";
 					BufferedImage img = ImageIO.read(new File(currentImg));
 					ImageIcon icon = new ImageIcon(img);
 					j.setIcon(icon);
+					reloadText();
 				} else {
-					c.setText("No downloaded controller skins could be found.");
+					c.setText("No controller skins found.");
 				}
 			}
 		} catch(IOException er) {
 			error err = new error();
 			err.display(er.toString());
 		}
+	}
+
+	public void reloadText() {
+		String msg = "Choose";
+			if(type == 0) {
+				if(indb == ba.size()-1) {
+					msg+= " (Default)";
+				}
+
+				if(ba.get(indb).equals(ba.get(0))) {
+					msg+= " (Current)";
+				}
+			} else {
+				if(indc == co.size()-1) {
+					msg+= " (Default)";
+				}
+
+				if(co.get(indc).equals(co.get(0))) {
+					msg+= " (Current)";
+				}
+			}
+		c.setText(msg);
 	}
 }
