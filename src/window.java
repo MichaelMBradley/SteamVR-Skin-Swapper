@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class window implements ActionListener {
-	private JFrame f;
+	private JInternalFrame f;
 	private JButton r;
 	private JButton l;
 	private JButton e;
@@ -21,41 +21,52 @@ public class window implements ActionListener {
 	private String[][] skinfo;
 	private String steam;
 	private String currentImg;
+	private JMenuBar menuBar;
+	private JMenu mnNewMenu;
+	private JMenuItem mntmNewMenuItem;
 	
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public void setupGUI(String SteamVR, String[][] skin) {
 		dir = SteamVR + "\\workshop\\content\\250820";
 		steam = SteamVR;
 		skinfo = skin;
 		
-		f = new JFrame("SteamVR Skin Swapper");
+		f = new JInternalFrame("SteamVR Skin Swapper", false);
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.setClosable(true);
 		r = new JButton(">");
-		r.setBounds(450, 0, 50, 300);
+		r.setBounds(455, 0, 50, 300);
 		r.addActionListener(this);
 		l = new JButton("<");
-		l.setBounds(0, 0, 50, 300);
+		l.setBounds(1, 0, 50, 300);
 		l.addActionListener(this);
 		e = new JButton("Explorer");
-		e.setBounds(0, 300, 100, 50);
+		e.setBounds(1, 302, 100, 50);
 		e.addActionListener(this);
 		c = new JButton("Choose");
-		c.setBounds(100, 300, 300, 50);
+		c.setBounds(103, 302, 300, 50);
 		c.addActionListener(this);
 		t = new JButton("Controller");
-		t.setBounds(400, 300, 100, 50);
+		t.setBounds(405, 302, 100, 50);
 		t.addActionListener(this);
 		j = new JLabel();
-		j.setBounds(50, 0, 400, 300);
+		j.setBounds(53, 0, 400, 300);
+		f.getContentPane().setLayout(null);
 		
-		f.add(r);f.add(l);f.add(e);f.add(c);f.add(t);f.add(j);
-		f.setSize(515,388);
-		f.setLayout(null);
+		f.getContentPane().add(r);f.getContentPane().add(l);f.getContentPane().add(e);f.getContentPane().add(c);f.getContentPane().add(t);f.getContentPane().add(j);
+		f.setSize(522,405);
+		
+		menuBar = new JMenuBar();
+		f.setJMenuBar(menuBar);
+		
+		mnNewMenu = new JMenu("File");
+		menuBar.add(mnNewMenu);
+		
+		mntmNewMenuItem = new JMenuItem("Select skins");
+		mnNewMenu.add(mntmNewMenuItem);
 		f.setVisible(true);
-		
-		f.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent windowEvent) {
-				System.exit(0);
-			}
-		});
 		
 		reloadImage();
 	}
