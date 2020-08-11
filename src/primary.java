@@ -1,14 +1,18 @@
+import java.util.ArrayList;
+
 public class primary {
 	public static void main(String[] args) {
-		String[][] skins = new String[2][100];
+		ArrayList<String> controllers = new ArrayList<String>();
+		ArrayList<String> basestations = new ArrayList<String>();
 		String steam;
 		
 		steam = setup.initialize();
 		if(steam!="") {
-			skins = skinChanger.findSkins(steam);
+			controllers = skinChanger.findControllers(steam);
+			basestations = skinChanger.findBasestations(steam);
 					
 			window w = new window();
-			w.setupGUI(steam, skins);
+			w.setupGUI(steam, basestations, controllers);
 		} else {
 			error e = new error();
 			e.display("The Steam directory could not be located.");
