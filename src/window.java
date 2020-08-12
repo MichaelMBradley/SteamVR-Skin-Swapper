@@ -50,6 +50,7 @@ public class window implements ActionListener {
 		}
 		
 		f = new JFrame("SteamVR Skin Swapper");
+		f.setResizable(false);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		r = new JButton(">");
 		r.setToolTipText("Next skin");
