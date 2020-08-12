@@ -1,4 +1,5 @@
 import java.awt.Desktop;
+import java.awt.Image;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
@@ -28,6 +29,7 @@ public class window implements ActionListener {
 	private JMenuItem mnNewSkin;
 	private JMenuItem mnPre;
 	private JMenuItem mnHelp;
+	private BufferedImage img;
 
 	/**
 	 * @wbp.parser.entryPoint
@@ -50,34 +52,33 @@ public class window implements ActionListener {
 		}
 		
 		f = new JFrame("SteamVR Skin Swapper");
-		f.setResizable(false);
+		f.setSize(524,418);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		r = new JButton(">");
 		r.setToolTipText("Next skin");
-		r.setBounds(456, 2, 50, 300);
+		
 		r.addActionListener(this);
 		l = new JButton("<");
 		l.setToolTipText("Previous skin");
-		l.setBounds(2, 2, 50, 300);
+		
 		l.addActionListener(this);
 		e = new JButton("Explorer");
 		e.setToolTipText("Open skin in file explorer");
-		e.setBounds(2, 304, 100, 50);
+		
 		e.addActionListener(this);
 		c = new JButton("Choose");
 		c.setToolTipText("Use this skin");
-		c.setBounds(104, 304, 300, 50);
+		
 		c.addActionListener(this);
 		t = new JButton("Controller");
 		t.setToolTipText("Swap type of skin");
-		t.setBounds(406, 304, 100, 50);
+		
 		t.addActionListener(this);
 		j = new JLabel();
-		j.setBounds(54, 2, 400, 300);
-		f.getContentPane().setLayout(null);
 		
+		f.getContentPane().setLayout(null);
 		f.getContentPane().add(r);f.getContentPane().add(l);f.getContentPane().add(e);f.getContentPane().add(c);f.getContentPane().add(t);f.getContentPane().add(j);
-		f.setSize(524,418);
 
 		menuBar = new JMenuBar();
 		f.setJMenuBar(menuBar);
@@ -97,6 +98,23 @@ public class window implements ActionListener {
 		menuBar.add(mnHelp);
 		
 		f.setVisible(true);
+		newImage();
+		resize();
+		
+		f.addComponentListener(new ComponentAdapter() {
+		    public void componentResized(ComponentEvent componentEvent) {
+		        resize();
+		    }
+		});
+	}
+	
+	public void resize() {
+		r.setBounds(f.getWidth()-68, 2, 50, f.getHeight()-118);
+		l.setBounds(2, 2, 50, f.getHeight()-118);
+		e.setBounds(2, f.getHeight()-114, 100, 50);
+		c.setBounds(104, f.getHeight()-114, f.getWidth()-224, 50);
+		t.setBounds(f.getWidth()-118, f.getHeight()-114, 100, 50);
+		j.setBounds(54, 2, f.getWidth()-124, f.getHeight()-118);
 		reloadImage();
 	}
 
@@ -113,7 +131,7 @@ public class window implements ActionListener {
 					indc = 1;
 				}
 			}
-			reloadImage();
+			newImage();
 		} else if(a.getSource() == l) {
 			if(type == 0) { //Cycles left through skins
 				indb--;
@@ -126,7 +144,7 @@ public class window implements ActionListener {
 					indc = co.size()-1;
 				}
 			}
-			reloadImage();
+			newImage();
 		} else if(a.getSource() == e) {
 			try {
 				Desktop.getDesktop().open(new File(currentImg).getParentFile());
@@ -153,7 +171,7 @@ public class window implements ActionListener {
 				t.setText("Controller");
 			}
 
-			reloadImage();
+			newImage();
 		} else if(a.getSource() == mnHelp) {
 			popup h = new popup();
 			h.display(
@@ -173,17 +191,14 @@ public class window implements ActionListener {
 			//Find other preview image
 		}
 	}
-
-	public void reloadImage() {
+	
+	public void newImage() {
 		try {
 			if(type == 0) {
 				if(ba.size()>1) {
 					File[] sub = new File(dir + "\\" + ba.get(indb)).listFiles();
 					currentImg = sub[0] + "\\vive_base_thumbnail.png";
-					BufferedImage img = ImageIO.read(new File(currentImg));
-					ImageIcon icon = new ImageIcon(img);
-					j.setIcon(icon);
-					reloadText();
+					img = ImageIO.read(new File(currentImg));
 				} else {
 					c.setText("No base station skins found.");
 				}
@@ -191,18 +206,22 @@ public class window implements ActionListener {
 				if(co.size()>1) {
 					File[] sub = new File(dir + "\\" + co.get(indc)).listFiles();
 					currentImg = sub[0] + "\\vive_controller_thumbnail.png";
-					BufferedImage img = ImageIO.read(new File(currentImg));
-					ImageIcon icon = new ImageIcon(img);
-					j.setIcon(icon);
-					reloadText();
+					img = ImageIO.read(new File(currentImg));
 				} else {
 					c.setText("No controller skins found.");
 				}
 			}
+			reloadText();
+			reloadImage();
 		} catch(IOException er) {
 			popup err = new popup();
 			err.display(er.toString(), true);
 		}
+	}
+	
+	public void reloadImage() {
+		ImageIcon icon = new ImageIcon(img);
+		j.setIcon(new ImageIcon(icon.getImage().getScaledInstance(f.getWidth()-124, f.getHeight()-118, Image.SCALE_FAST)));
 	}
 
 	public void reloadText() {
