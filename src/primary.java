@@ -14,8 +14,8 @@ public class primary {
 			window w = new window();
 			w.setupGUI(steam, basestations, controllers);
 		} else {
-			error e = new error();
-			e.display("The Steam directory could not be located.");
+			popup e = new popup();
+			e.display("The Steam directory could not be located.", true);
 		}
 	}
 }

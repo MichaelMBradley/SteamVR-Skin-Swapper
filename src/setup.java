@@ -30,12 +30,12 @@ public class setup {
 			r.close();
 			e.close();
 			if(ie>1) {
-				error err = new error();
-				err.display(er);
+				popup err = new popup();
+				err.display(er, true);
 			}
 		} catch (IOException e) {
-			error erro = new error();
-			erro.display(e.toString());
+			popup erro = new popup();
+			erro.display(e.toString(), true);
 			return "";
 		}
 		
@@ -84,11 +84,11 @@ public class setup {
 				c.close();
 			}
 		} catch(SecurityException e) { //Error tracking
-			error err = new error();
-			err.display(e.toString());
+			popup err = new popup();
+			err.display(e.toString(), true);
 		} catch(IOException e) {
-			error err = new error();
-			err.display(e.toString());
+			popup err = new popup();
+			err.display(e.toString(), true);
 		}
 		return steam;
 	}

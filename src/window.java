@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class window implements ActionListener {
-	private JInternalFrame f;
+	private JFrame f;
 	private JButton r;
 	private JButton l;
 	private JButton e;
@@ -24,9 +24,14 @@ public class window implements ActionListener {
 	private String steam;
 	private String currentImg;
 	private JMenuBar menuBar;
-	private JMenu mnNewMenu;
-	private JMenuItem mntmNewMenuItem;
+	private JMenu mnFile;
+	private JMenuItem mnNewSkin;
+	private JMenuItem mnPre;
+	private JMenuItem mnHelp;
 
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public void setupGUI(String SteamVR, ArrayList<String> basestations, ArrayList<String> controllers) {
 		dir = SteamVR + "\\workshop\\content\\250820";
 		steam = SteamVR;
@@ -43,42 +48,54 @@ public class window implements ActionListener {
 				indc = i;
 			}
 		}
-
-		f = new JInternalFrame("SteamVR Skin Swapper", false);
+		
+		f = new JFrame("SteamVR Skin Swapper");
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.setClosable(true);
 		r = new JButton(">");
-		r.setBounds(455, 0, 50, 300);
+		r.setToolTipText("Next skin");
+		r.setBounds(456, 2, 50, 300);
 		r.addActionListener(this);
 		l = new JButton("<");
-		l.setBounds(1, 0, 50, 300);
+		l.setToolTipText("Previous skin");
+		l.setBounds(2, 2, 50, 300);
 		l.addActionListener(this);
 		e = new JButton("Explorer");
-		e.setBounds(1, 302, 100, 50);
+		e.setToolTipText("Open skin in file explorer");
+		e.setBounds(2, 304, 100, 50);
 		e.addActionListener(this);
 		c = new JButton("Choose");
-		c.setBounds(103, 302, 300, 50);
+		c.setToolTipText("Use this skin");
+		c.setBounds(104, 304, 300, 50);
 		c.addActionListener(this);
 		t = new JButton("Controller");
-		t.setBounds(405, 302, 100, 50);
+		t.setToolTipText("Swap type of skin");
+		t.setBounds(406, 304, 100, 50);
 		t.addActionListener(this);
 		j = new JLabel();
-		j.setBounds(53, 0, 400, 300);
+		j.setBounds(54, 2, 400, 300);
 		f.getContentPane().setLayout(null);
-
+		
 		f.getContentPane().add(r);f.getContentPane().add(l);f.getContentPane().add(e);f.getContentPane().add(c);f.getContentPane().add(t);f.getContentPane().add(j);
-		f.setSize(522,405);
+		f.setSize(524,418);
 
 		menuBar = new JMenuBar();
 		f.setJMenuBar(menuBar);
 
-		mnNewMenu = new JMenu("File");
-		menuBar.add(mnNewMenu);
+		mnFile = new JMenu("File");
+		menuBar.add(mnFile);
 
-		mntmNewMenuItem = new JMenuItem("Select skins");
-		mnNewMenu.add(mntmNewMenuItem);
+		mnNewSkin = new JMenuItem("Find");
+		mnNewSkin.setToolTipText("Manually find new skins");
+		mnFile.add(mnNewSkin);
+		mnPre = new JMenuItem("Preview");
+		mnPre.setToolTipText("Get new preview image");
+		mnFile.add(mnPre);
+
+		mnHelp = new JMenuItem("Help");
+		mnHelp.addActionListener(this);
+		menuBar.add(mnHelp);
+		
 		f.setVisible(true);
-
 		reloadImage();
 	}
 
@@ -113,8 +130,8 @@ public class window implements ActionListener {
 			try {
 				Desktop.getDesktop().open(new File(currentImg).getParentFile());
 			} catch (IOException er) {
-				error err = new error();
-				err.display(er.toString());
+				popup err = new popup();
+				err.display(er.toString(), true);
 			}
 		} else if(a.getSource() == c) {
 			if(type == 0) {
@@ -136,6 +153,23 @@ public class window implements ActionListener {
 			}
 
 			reloadImage();
+		} else if(a.getSource() == mnHelp) {
+			popup h = new popup();
+			h.display(
+			"Skins:/n" +
+			"* (Default) is the skin that comes with SteamVR/n" +
+			"*** There may be more skins with identical previews, but (Default) marks the real one/n" +
+			"* (Current) Is the skin that is currently in use/n" +
+			"/n" +
+			"Problems:/n" +
+			"* Preview does not represent skin/n" +
+			"*** File>Preview lets you select a file that is not the default, but may be more accurate/n" +
+			"* Not all downloaded skins are detected/n" +
+			"*** File>Find allows you to browse other workshop files to use as skins", false);
+		} else if(a.getSource() == mnNewSkin) {
+			//Find new skins
+		} else if(a.getSource() == mnPre) {
+			//Find other preview image
 		}
 	}
 
@@ -165,8 +199,8 @@ public class window implements ActionListener {
 				}
 			}
 		} catch(IOException er) {
-			error err = new error();
-			err.display(er.toString());
+			popup err = new popup();
+			err.display(er.toString(), true);
 		}
 	}
 

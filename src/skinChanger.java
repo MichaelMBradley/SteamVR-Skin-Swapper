@@ -26,8 +26,8 @@ public class skinChanger {
 								b.write(corr.getName());
 								b.close();
 							} catch (IOException e) {
-								error err = new error();
-								err.display(e.toString());
+								popup err = new popup();
+								err.display(e.toString(), true);
 							}
 							
 						}
@@ -66,8 +66,8 @@ public class skinChanger {
 								c.write(corr.getName());
 								c.close();
 							} catch (IOException e) {
-								error err = new error();
-								err.display(e.toString());
+								popup err = new popup();
+								err.display(e.toString(), true);
 							}
 							
 						}
@@ -104,8 +104,8 @@ public class skinChanger {
 					try {
 						Files.copy(temp.toPath(), new File(basestationDefault.toString() + "\\" + temp.getName()).toPath());
 					} catch (IOException e) {
-						error err = new error();
-						err.display(e.toString());
+						popup err = new popup();
+						err.display(e.toString(), true);
 					}
 				}
 			}
@@ -121,8 +121,8 @@ public class skinChanger {
 					try {
 						Files.copy(temp.toPath(), new File(controllerDefault.toString() + "\\" + temp.getName()).toPath());
 					} catch (IOException e) {
-						error err = new error();
-						err.display(e.toString());
+						popup err = new popup();
+						err.display(e.toString(), true);
 					}
 				}
 			}
