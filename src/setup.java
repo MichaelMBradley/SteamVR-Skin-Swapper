@@ -74,13 +74,13 @@ public class setup {
 			
 			if(!basestationSkin.exists()) {
 				FileWriter b = new FileWriter(basestationSkin); //Writes default skin to file
-				b.write("defaultBasestation");
+				b.write("defaultBasestation/nvive_base_thumbnail.png");
 				b.close();
 			}
 			
 			if(!controllerSkin.exists()) {
 				FileWriter c = new FileWriter(controllerSkin);
-				c.write("defaultController");
+				c.write("defaultController/nvive_controller_thumbnail.png");
 				c.close();
 			}
 		} catch(SecurityException e) { //Error tracking

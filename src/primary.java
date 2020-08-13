@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 public class primary {
 	public static void main(String[] args) {
+		//skinChanger.deleteSkinID(setup.initialize());/*
 		ArrayList<String> controllers = new ArrayList<String>();
 		ArrayList<String> basestations = new ArrayList<String>();
 		String steam;
@@ -16,6 +17,6 @@ public class primary {
 		} else {
 			popup e = new popup();
 			e.display("The Steam directory could not be located.", true);
-		}
+		}//*/
 	}
 }

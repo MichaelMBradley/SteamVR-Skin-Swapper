@@ -5,6 +5,8 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -188,27 +190,61 @@ public class window implements ActionListener {
 		} else if(a.getSource() == mnNewSkin) {
 			//Find new skins
 		} else if(a.getSource() == mnPre) {
-			//Find other preview image
+			FilenameFilter f = new FilenameFilter() {public boolean accept(File dir, String name) {return name.toLowerCase().endsWith(".png");}};
+			try {
+				if(type == 0) {
+					if(ba.size()>1) {
+						int i = 0;
+						File[] sub = new File(dir + "\\" + ba.get(indb).split("/n")[0]).listFiles()[0].listFiles(f);
+						for(File p : sub) {
+							if(p.getName() == ba.get(indb).split("/n")[1]) {
+								if(i!=p.length()-1) {
+									i++;
+									break;
+								} else {
+									i = 0;
+									break;
+								}
+							}
+							i++;
+						}
+						FileWriter b = new FileWriter(new File(sub[i].getParent()+"\\skinID.txt"));
+						ba.set(indb, ba.get(indb).split("/n")[0]+"/n"+sub[i].getName());
+						b.write(ba.get(indb));
+						b.close();
+						img = ImageIO.read(new File(currentImg));
+					} else {
+						popup p = new popup();
+						p.display("No other images found.", false);
+					}
+				} else {
+					//Controller
+				}
+				reloadText();
+				reloadImage();
+			} catch(IOException er) {
+				popup err = new popup();
+				err.display(er.toString(), true);
+			}
 		}
 	}
 	
 	public void newImage() {
 		try {
 			if(type == 0) {
+				for(int i = 0; i<ba.size(); i++) {
+					System.out.println(ba.get(i));
+				}
 				if(ba.size()>1) {
-					File[] sub = new File(dir + "\\" + ba.get(indb)).listFiles();
-					currentImg = sub[0] + "\\vive_base_thumbnail.png";
+					File[] sub = new File(dir + "\\" + ba.get(indb).split("/n")[0]).listFiles();
+					currentImg = sub[0] + "\\" + ba.get(indb).split("/n")[1];
 					img = ImageIO.read(new File(currentImg));
-				} else {
-					c.setText("No base station skins found.");
 				}
 			} else {
 				if(co.size()>1) {
-					File[] sub = new File(dir + "\\" + co.get(indc)).listFiles();
-					currentImg = sub[0] + "\\vive_controller_thumbnail.png";
+					File[] sub = new File(dir + "\\" + co.get(indc).split("/n")[0]).listFiles();
+					currentImg = sub[0] + "\\" + co.get(indc).split("/n")[1];
 					img = ImageIO.read(new File(currentImg));
-				} else {
-					c.setText("No controller skins found.");
 				}
 			}
 			reloadText();
@@ -220,27 +256,37 @@ public class window implements ActionListener {
 	}
 	
 	public void reloadImage() {
-		ImageIcon icon = new ImageIcon(img);
-		j.setIcon(new ImageIcon(icon.getImage().getScaledInstance(f.getWidth()-124, f.getHeight()-118, Image.SCALE_FAST)));
+		if(img!=null) {
+			ImageIcon icon = new ImageIcon(img);
+			j.setIcon(new ImageIcon(icon.getImage().getScaledInstance(f.getWidth()-124, f.getHeight()-118, Image.SCALE_FAST)));
+		}
 	}
 
 	public void reloadText() {
 		String msg = "Choose";
 			if(type == 0) {
-				if(indb == ba.size()-1) {
-					msg+= " (Default)";
-				}
-
-				if(ba.get(indb).equals(ba.get(0))) {
-					msg+= " (Current)";
+				if(ba.size()>1) {
+					if(ba.get(indb).equals("defaultBasestation")) {
+						msg+= " (Default)";
+					}
+	
+					if(ba.get(indb).equals(ba.get(0))) {
+						msg+= " (Current)";
+					}
+				} else {
+					c.setText("No base station skins found.");
 				}
 			} else {
-				if(indc == co.size()-1) {
-					msg+= " (Default)";
-				}
-
-				if(co.get(indc).equals(co.get(0))) {
-					msg+= " (Current)";
+				if(co.size()>1) {
+					if(co.get(indc).equals("defaultController")) {
+						msg+= " (Default)";
+					}
+	
+					if(co.get(indc).equals(co.get(0))) {
+						msg+= " (Current)";
+					}
+				} else {
+					c.setText("No controller skins found.");
 				}
 			}
 		c.setText(msg);
